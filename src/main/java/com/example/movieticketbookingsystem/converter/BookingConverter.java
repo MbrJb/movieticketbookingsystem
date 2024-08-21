@@ -12,6 +12,7 @@ public class BookingConverter {
         BookingDto bookingDto = new BookingDto();
         bookingDto.setDtoBookingId(booking.getId());
         bookingDto.setDtoBookingDate(booking.getBookingDate());
+        bookingDto.setDtoTotalPrice(booking.getTotalPrice());
         bookingDto.setDtoMovie(booking.getMovie());
         bookingDto.setDtoSeat(booking.getSeat());
         bookingDto.setDtoUser(booking.getUser());
@@ -24,6 +25,7 @@ public class BookingConverter {
         Booking booking = new Booking();
         booking.setId(bookingDto.getDtoBookingId());
         booking.setBookingDate(bookingDto.getDtoBookingDate());
+        booking.setTotalPrice(bookingDto.getDtoTotalPrice());
         booking.setMovie(bookingDto.getDtoMovie());
         booking.setSeat(bookingDto.getDtoSeat());
         booking.setUser(bookingDto.getDtoUser());

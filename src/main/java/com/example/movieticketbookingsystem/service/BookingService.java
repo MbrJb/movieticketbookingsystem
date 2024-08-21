@@ -59,15 +59,18 @@ public class BookingService {
     }
 
 
+    @Transactional
     public boolean seatBooked(Long id){
-        return seatRepository.existsById(id);
+        return seatRepository.findById(id)
+                .map(seat -> !seat.isBooked())
+                .orElse(false);
     }
 
     @Transactional
     public BookingDto addNewBooking(BookingDto bookingDto, Long seatId){
         try {
 
-            calculateTotalPrice(bookingDto);
+            BigDecimal price = calculateTotalPrice(bookingDto);
 
             if(seatBooked(seatId)){
                 throw new SeatBookedException("Please pick a different seat");
@@ -75,6 +78,7 @@ public class BookingService {
 
             Booking booking = BookingConverter.convertBookingDtoToEntity(bookingDto);
             booking.setBookingDate(booking.getBookingDate());
+            booking.setTotalPrice(price);
             booking.setMovie(booking.getMovie());
             booking.setSeat(booking.getSeat());
             booking.setUser(booking.getUser());

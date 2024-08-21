@@ -1,7 +1,10 @@
 package com.example.movieticketbookingsystem.converter;
 
+import com.example.movieticketbookingsystem.domain.Booking;
 import com.example.movieticketbookingsystem.domain.Seat;
 import com.example.movieticketbookingsystem.dto.SeatDto;
+
+import java.util.List;
 
 public class SeatConverter {
 
@@ -12,7 +15,8 @@ public class SeatConverter {
         SeatDto seatDto = new SeatDto();
         seatDto.setDtoId(seat.getId());
         seatDto.setPrice(seat.getPrice());
-        seatDto.setBookings(seat.getBooking());
+        seatDto.setBooked(seat.isBooked());
+        seatDto.setBookings((List<Booking>) seat.getBooking());
 
         return seatDto;
     }
@@ -22,7 +26,8 @@ public class SeatConverter {
         Seat seat = new Seat();
         seat.setId(seatDto.getDtoId());
         seat.setPrice(seatDto.getPrice());
-        seat.setBooking(seatDto.getBookings());
+        seat.setBooked(seatDto.isBooked());
+        seat.setBooking((Booking) seatDto.getBookings());
 
         return seat;
     }

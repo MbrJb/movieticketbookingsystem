@@ -24,6 +24,7 @@ public class SeatService {
     public SeatDto addNewSeat(SeatDto seatDto){
         Seat seat = SeatConverter.convertSeatDtoToEntity(seatDto);
         seat.setPrice(seat.getPrice());
+        seat.setBooked(seat.isBooked());
         seatRepository.save(seat);
 
         return SeatConverter.convertSeatEntityToDto(seat);

@@ -17,6 +17,7 @@ import java.math.BigDecimal;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private BigDecimal price;
+    private boolean booked;
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private Booking booking;
