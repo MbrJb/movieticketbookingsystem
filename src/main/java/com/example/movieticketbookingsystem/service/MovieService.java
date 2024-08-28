@@ -44,7 +44,7 @@ public class MovieService {
     }
 
     public List<MovieDto> findMovieByName(String name){
-        Optional<Movie> movie = movieRepository.findByMovieName(name);
+        Optional<Movie> movie = movieRepository.findByTitle(name);
 
         if(movie.isPresent()){
 

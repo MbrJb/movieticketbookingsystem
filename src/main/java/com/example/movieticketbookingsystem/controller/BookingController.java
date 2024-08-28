@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/booking")
+@RequestMapping("/bookings")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -19,7 +19,7 @@ public class BookingController {
     }
 
     @PostMapping("/add")
-    public BookingDto createNewBooking(@RequestBody BookingDto bookingDto, Long seatId){
+    public BookingDto createNewBooking(@RequestBody BookingDto bookingDto, @RequestParam Long seatId){
         return bookingService.addNewBooking(bookingDto, seatId);
     }
 

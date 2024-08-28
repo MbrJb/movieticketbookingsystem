@@ -2,17 +2,13 @@ package com.example.movieticketbookingsystem.service;
 
 import com.example.movieticketbookingsystem.converter.BookingConverter;
 import com.example.movieticketbookingsystem.domain.Booking;
-import com.example.movieticketbookingsystem.domain.Movie;
 import com.example.movieticketbookingsystem.domain.Seat;
 import com.example.movieticketbookingsystem.dto.BookingDto;
 import com.example.movieticketbookingsystem.exception.BookingNotFoundException;
-import com.example.movieticketbookingsystem.exception.MovieNotFoundException;
 import com.example.movieticketbookingsystem.exception.SeatBookedException;
-import com.example.movieticketbookingsystem.exception.SeatNotFoundException;
 import com.example.movieticketbookingsystem.repository.BookingRepository;
 import com.example.movieticketbookingsystem.repository.MovieRepository;
 import com.example.movieticketbookingsystem.repository.SeatRepository;
-import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,59 +32,69 @@ public class BookingService {
         this.movieRepository = movieRepository;
     }
 
-    @Transactional
-    public BigDecimal calculateTotalPrice(BookingDto bookingDto){
-
-        Optional<Movie> movieOptional = movieRepository.findById(bookingDto.getDtoMovie().getId());
-        if(movieOptional.isEmpty()){
-            throw new MovieNotFoundException("Movie not found");
-        }
-
-        Optional<Seat> seatOptional = seatRepository.findById(bookingDto.getDtoSeat().getId());
-        if (seatOptional.isEmpty()){
-            throw new SeatNotFoundException("Seat not found");
-        }
-
-        Movie movie = movieOptional.get();
-        BigDecimal moviePrice = movie.getPrice();
-
-        Seat seat = seatOptional.get();
-        BigDecimal seatPrice = seat.getPrice();
-
-        return moviePrice.add(seatPrice);
-    }
+//    @Transactional
+//    public BigDecimal calculateTotalPrice(){
+//
+//        Movie movie = new Movie();
+//        Optional<Movie> movieOptional = Optional.of(movie);
+//
+//        boolean movieExists = movieRepository.existsById(movieOptional.get().getId());
+//
+//        if(!movieExists){
+//            throw new MovieNotFoundException("Movie not found");
+//        }
+//
+//        Seat seat = new Seat();
+//        Optional<Seat> seatOptional = Optional.of(seat);
+//
+//        boolean seatExists = seatRepository.existsById(seatOptional.get().getId());
+//
+//        if(!seatExists){
+//            throw new SeatNotFoundException("Seat not found");
+//        }
+//
+//        BigDecimal moviePrice = movieOptional.get().getPrice();
+//        BigDecimal seatPrice = seatOptional.get().getPrice();
+//
+//        return moviePrice.add(seatPrice);
+//    }
 
 
     @Transactional
     public boolean seatBooked(Long id){
-        return seatRepository.findById(id)
-                .map(seat -> !seat.isBooked())
-                .orElse(false);
+//        return seatRepository.findById(id)
+//                .map(seat -> !seat.isBooked())
+//                .orElse(false);
+
+        Seat seat = new Seat();
+        Optional<Seat> seatOptional = Optional.of(seat);
+
+        boolean exists = seatRepository.existsById(id);
+        if(exists){
+           return seatOptional.get().isBooked();
+        }
+        return false;
     }
 
     @Transactional
     public BookingDto addNewBooking(BookingDto bookingDto, Long seatId){
-        try {
-
-            BigDecimal price = calculateTotalPrice(bookingDto);
 
             if(seatBooked(seatId)){
                 throw new SeatBookedException("Please pick a different seat");
             }
 
+            BigDecimal totalPrice = bookingDto.getDtoMovie().getPrice()
+                                    .add(bookingDto.getDtoSeat().getPrice());
+
             Booking booking = BookingConverter.convertBookingDtoToEntity(bookingDto);
             booking.setBookingDate(booking.getBookingDate());
-            booking.setTotalPrice(price);
+            booking.setTotalPrice(totalPrice);
             booking.setMovie(booking.getMovie());
             booking.setSeat(booking.getSeat());
             booking.setUser(booking.getUser());
             bookingRepository.save(booking);
 
             return BookingConverter.convertBookingEntityToDto(booking);
-        } catch (OptimisticLockException e){
-
-            throw new SeatBookedException("The seat was booked by someone else. Please pick a different seat.");
-        }
     }
 
     public List<BookingDto> findAllBookings(){

@@ -2,6 +2,7 @@ package com.example.movieticketbookingsystem.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Table(name = "bookings")
 @Entity
 public class Booking {
@@ -21,15 +23,17 @@ public class Booking {
     private LocalDateTime bookingDate;
     private BigDecimal totalPrice;
 
-    @Version
-    private Integer version;
 
-    @OneToOne(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "movieId", referencedColumnName = "id")
      private Movie movie;
 
-    @OneToOne(mappedBy = "seat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "seatId", referencedColumnName = "id")
     private Seat seat;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
+
+
 }

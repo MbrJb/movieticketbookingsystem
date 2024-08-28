@@ -1,5 +1,6 @@
 package com.example.movieticketbookingsystem.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @Table(name = "users")
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @Id

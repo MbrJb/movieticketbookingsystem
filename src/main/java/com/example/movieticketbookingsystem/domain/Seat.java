@@ -1,5 +1,6 @@
 package com.example.movieticketbookingsystem.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Data
 @Table(name = "seats")
-@Entity public class Seat {
+@Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Seat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +22,7 @@ import java.math.BigDecimal;
     private BigDecimal price;
     private boolean booked;
 
-    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "seat", cascade = CascadeType.ALL, orphanRemoval = true)
     private Booking booking;
 
 
